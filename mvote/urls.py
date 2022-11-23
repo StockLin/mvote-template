@@ -24,6 +24,7 @@ urlpatterns = [
     path('', views.index),
     path('poll/<int:pollid>', views.poll, name='poll-url'),
     path('vote/<int:pollid>/<int:pollitemid>', views.vote, name='vote-url'),
+    path('govote/', views.govote),
 
     path('test', TemplateView.as_view(template_name='test.html')),
 ]

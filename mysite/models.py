@@ -17,3 +17,9 @@ class PollItem(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class VoteCheck(models.Model):
+    userid = models.PositiveIntegerField()
+    pollid = models.PositiveIntegerField()
+    vote_date = models.DateField()
