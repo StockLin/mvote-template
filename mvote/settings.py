@@ -20,10 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-si9pi3a4(6#^&y5@$04+f#k&+s*obz1#0wguf4i$e1$q!%=0tk'
+SECRET_KEY = 'yourSecretKeyHere'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*',]
 
@@ -140,10 +140,11 @@ SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 SOCIALACCOUNT_AUTO_SIGNUP = True
 
+# smtp 郵件伺服器設定
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.mailgun.org'
-EMAIL_HOST_USER = 'postmaster@sandbox1600c459bfd14c1f87f675998f42cb6c.mailgun.org'
-EMAIL_HOST_PASSWORD = '7b4bb4ef3cf18f556fdf742efe5dea8e'
+EMAIL_HOST = ''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
 AUTHENTICATION_BACKENDS = [
