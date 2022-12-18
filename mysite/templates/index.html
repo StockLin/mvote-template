@@ -1,68 +1,81 @@
-<!-- index.html (mvote project) -->
+<!-- index.html (mshop project) -->
 {% extends "base.html" %}
-{% load mvote_extras %}
-{% block title %}投票趣{% endblock %}
+{% block title %}迷你小電商{% endblock %}
 {% block content %}
-    <div class='container'>
-        {% for message in messages %}
-            <div class='alert alert-{{message.tags}}'>{{ message }}</div>
-        {% endfor %}
-
-        <div class='row'>
-            <div class='col-md-12'>
-                <div class='panel panel-default'>
-                    <div class='panel-heading' align=center>
-                        <h3>歡迎光臨投票趣</h3>
-                        {% if user.is_authenticated %}
-                            {% if user.socialaccount_set.all.0.extra_data.name %}
-                                {{user.socialaccount_set.all.0.extra_data.name}}<br/>
-                               <img src='{{user.socialaccount_set.all.0.get_avatar_url}}' width='100'>
-                            {% else %}
-                                Welcome: {{ user.username }}
-                            {% endif %}
+{% load mvote_extras %}
+<div class='container'>
+    {{today}}
+{% for message in messages %}
+    <div class='alert alert-{{message.tags}}'>{{ message }}</div>
+{% endfor %}
+    <div class='row'>
+        <div class='col-md-12'>
+            <div class='panel panel-default'>
+                <div class='panel-heading' align=center>
+                    <h3>歡迎光臨迷你小電商<br>【{{category.name | default:"全部產品"}}】</h3>
+                    {% if user.is_authenticated %}
+                        {% if user.socialaccount_set.all.0.extra_data.name %}
+                            {{user.socialaccount_set.all.0.extra_data.name}}<br/>
+                            <img src='{{user.socialaccount_set.all.0.get_avatar_url}}' width='100'>
                         {% else %}
-                            <p>歡迎使用Facebook註冊/登入你的帳號，以擁有投票和製作投票的功能。</p>
+                            Welcome: {{ user.username }}
                         {% endif %}
-                    </div>
+                    {% else %}
+                        <p>歡迎使用Facebook註冊/登入你的帳號才能購買本站優惠商品（教學測試用）。</p>             
+                    {% endif %}
                 </div>
             </div>
         </div>
-
-        <div class='row'>
-            <button class='btn btn-info'>
-                目前是第{{ polls.number }}頁</a>
-            </button>
-            {% if polls.has_previous %}
-                <button class='btn btn-info'>
-                    <a href='?p={{ polls.previous_page_number }}'>上一頁</a>
-                </button>
-            {% endif %}
-            {% if polls.has_next %}
-                <button class='btn btn-info'>
-                    <a href='?p={{ polls.next_page_number }}'>下一頁</a>
-                </button>
-            {% endif %}
-        </div>
-
-        <div class='row'>
-            {% load account %}
-            {% for poll in polls %}
-                {% if forloop.first %}
-                    <div class='list-group'>
-                {% endif %}
-                    <a href='{% url "poll-url" poll.id %}' class='list-group-item'>
-                        <span class='glyphicon glyphicon-check'></span>
-                        總票數：{{ poll.id | show_votes }}，
-                        項目數：{{ poll.id | show_items }}：
-                        {{ poll.name }}, added by 【{{poll.user}}】,
-                        created at {{poll.created_at}}
-                    </a>
-                {% if forloop.last %}
-                    </div>
-                {% endif %}
-            {% empty %}
-                <center><h3>目前並沒有活躍中的投票項目</h3></center>
-            {% endfor %}
-        </div>
     </div>
+    <div class='row'>
+            <button class='btn btn-info'>
+                目前是第{{ products.number }}頁</a>
+            </button>
+        {% if products.has_previous %}
+            <button class='btn btn-info'>
+                <a href='?p={{ products.previous_page_number }}'>上一頁</a>
+            </button>
+        {% endif %}
+        {% if products.has_next %}
+            <button class='btn btn-info'>
+                <a href='?p={{ products.next_page_number }}'>下一頁</a>
+            </button>
+        {% endif %}
+    </div>
+    {% load account %}
+    {% for product in products %}
+        {% cycle '<div class="row">' '' '' '' %}
+        <div class='col-xs-3 col-sm-3 col-md-3'>
+            <div class='thumbnail'>
+                <img src='{{product.image.url}}'>
+                <div class='caption'>
+                    <h4><a href='{% url "product-url" product.id %}'>{{ product.name }}</a></h4>
+                    <p>NT$ {{product.price }}</p>
+                    <p>庫存：{{product.stock}}</p>
+                    <p>{{ product.description }}</p>
+
+                    {% if user.is_authenticated %}
+                        <button class='btn btn-info' {{ product.stock | yesno:",disabled"}}>
+                            <a href='{% url "additem-url" product.id 1 %}'>放入購物車</a>
+                        </button>
+                    {% endif %}
+                </div>    
+            </div>
+        </div>
+
+        {% cycle '' '' '' '</div>'%}
+    {% empty %}
+        <div class='row'>
+            <div class='col-sm-12' align='center'>
+                <h3>此分類目前沒有任何商品</h3>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+    {% if cart.items|length > 0 %}
+        <em>目前購物車中共有 {{ cart.items|length }} 項產品</em>
+    {% else %}
+        <p>此購物車為空</p>
+    {% endif %}
 {% endblock %}
